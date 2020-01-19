@@ -23,7 +23,12 @@
                     key: $('#key').val(),
                     content: $('#content').val(),
                 }, function(data) {
-                    $('#output').val(data.result);
+                    if (data.result != null) {
+                        $('#output').val(data.result);
+                    } else {
+                        alert('Empty content!');
+                        $('#output').val('');
+                    };
                     $('.btn').attr('disabled', false);
                 }, 'json');
             });
@@ -38,7 +43,8 @@
                     if (data.result != null) {
                         $('#output').val(data.result);
                     } else {
-                        $('#output').val('Malformed content!');
+                        alert('Empty or Malformed content!');
+                        $('#output').val('');
                     };
                     $('.btn').attr('disabled', false);
                 }, 'json');

@@ -6,26 +6,41 @@ from base64 import b64decode, b64encode
 
 def decrypt(key, content):
     try:
-        c = b64decode(content).decode()
+        content = b64decode(content).decode()
     except:
         return None
-    if key == '':
-        return c
+    if content == '':
+        return None
+    elif key == '':
+        return content
     else:
-        dc = ''
-        for i in range(len(c)):
-            k = key[i % len(key)]
-            dc += chr((1114111*2 + ord(c[i]) -
-                    ord(k) - ord(str(i)[-1])) % 1114111)
+        loop = int(str(len(content)/len(key))[-1])
+        if not loop:
+            loop = int(str(len(content))[0])
+        for i in range(loop):
+            dc = ''
+            for i in range(len(content)):
+                k = key[i % len(key)]
+                dc += chr((ord(content[i]) - ord(k) -
+                           ord(str(i)[-1]) + 1114111*2) % 1114111)
+            content = dc
         return dc
 
 
 def encrypt(key, content):
-    if key == '':
+    if content == '':
+        return None
+    elif key == '':
         return b64encode(content.encode()).decode()
     else:
-        ec = ''
-        for i in range(len(content)):
-            k = key[i % len(key)]
-            ec += chr((ord(content[i]) + ord(k) + ord(str(i)[-1])) % 1114111)
+        loop = int(str(len(content)/len(key))[-1])
+        if not loop:
+            loop = int(str(len(content))[0])
+        for l in range(loop):
+            ec = ''
+            for i in range(len(content)):
+                k = key[i % len(key)]
+                ec += chr((ord(content[i]) + ord(k) +
+                           ord(str(i)[-1])) % 1114111)
+            content = ec
         return b64encode(ec.encode()).decode()

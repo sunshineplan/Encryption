@@ -55,8 +55,12 @@ def main():
         if choice == '1':
             content = multiline_input()
             key = getpass('Key:')
-            print('Encrypted Content:')
-            print(encrypt(key, content))
+            ec = encrypt(key, content)
+            if ec:
+                print('Encrypted Content:')
+                print(ec)
+            else:
+                print('Empty content!')
             pause()
         elif choice == '2':
             content = input('Content:')
@@ -66,7 +70,7 @@ def main():
                 print('Decrypted Content:')
                 print(dc)
             else:
-                print('Malformed content!')
+                print('Empty or Malformed content!')
             pause()
         elif choice.lower() == 'q':
             clear()
