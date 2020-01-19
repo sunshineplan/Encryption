@@ -1,0 +1,27 @@
+.navbar {
+    height: 80px;
+}
+
+.container-fluid {
+    position: fixed;
+    height: calc(100% - 80px);
+}
+
+.row {
+    height: 100%;
+}
+
+.btnbar {
+    width: 250px;
+}
+
+#content, #output {
+    resize: none;
+    padding-left: 0.8em;
+    height: calc(100% - 15px);
+}
+
+.content, .output {
+    width: calc(50% - 125px);
+    padding: 0 15px;
+}
