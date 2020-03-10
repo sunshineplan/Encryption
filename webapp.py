@@ -18,8 +18,9 @@ def encryption():
     mode = request.form.get('mode')
     key = request.form.get('key')
     content = request.form.get('content')
+    loop = request.form.get('level')
     if mode in ['encrypt', 'decrypt']:
-        return jsonify(result=eval(mode+'(key, content)'))
+        return jsonify(result=eval(mode+'(key, content, loop)'))
     else:
         return jsonify(result=None)
 

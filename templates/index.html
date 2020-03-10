@@ -4,10 +4,10 @@
 <head>
     <meta charset='utf-8'>
     <meta name='description' content='Encryption'>
-    <meta name='keywords' content='HTML,CSS,Python,JavaScript,jQuery,Bootstrap,Flask,JSON'>
+    <meta name='keywords' content='HTML, CSS, Python, JavaScript, jQuery, Bootstrap, Flask, JSON'>
     <meta name='author' content='Sunshine'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Encryption</title>
+    <title>Text Encryption</title>
     <script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' rel='stylesheet'>
@@ -16,38 +16,80 @@
     <script>
         $(function() {
             $('#encrypt').click(function() {
+                if ($('#unencrypted').val() == '') {
+                    alert('Empty unencrypted text!');
+                    return false;
+                }
+                if ($('#auto').is(':checked')) {
+                    level = 'auto';
+                } else {
+                    level = getLevel();
+                    if (level == false) {
+                        alert('Level must be between 1 and 99999');
+                        $('#level').val('5');
+                        return false;
+                    };
+                };
                 $('.btn').attr('disabled', true);
-                $('#output').val('');
+                $('body').addClass('wait');
+                $('#encrypted').val('');
                 $.post('do', {
                     mode: 'encrypt',
                     key: $('#key').val(),
-                    content: $('#content').val(),
+                    content: $('#unencrypted').val(),
+                    level: level,
                 }, function(data) {
                     if (data.result != null) {
-                        $('#output').val(data.result);
+                        $('#encrypted').val(data.result);
                     } else {
-                        alert('Empty content!');
-                        $('#output').val('');
+                        alert('Unknow error!');
                     };
                     $('.btn').attr('disabled', false);
+                    $('body').removeClass('wait');
                 }, 'json');
             });
             $('#decrypt').click(function() {
+                if ($('#encrypted').val() == '') {
+                    alert('Empty encrypted text!');
+                    return false;
+                }
+                if ($('#auto').is(':checked')) {
+                    level = 'auto';
+                } else {
+                    level = getLevel();
+                    if (level == false) {
+                        alert('Level must be between 1 and 99999');
+                        $('#level').val('5');
+                        return false;
+                    };
+                };
                 $('.btn').attr('disabled', true);
-                $('#output').val('');
+                $('body').addClass('wait');
+                $('#unencrypted').val('');
                 $.post('do', {
                     mode: 'decrypt',
                     key: $('#key').val(),
-                    content: $('#content').val(),
+                    content: $('#encrypted').val(),
+                    level: level
                 }, function(data) {
                     if (data.result != null) {
-                        $('#output').val(data.result);
+                        $('#unencrypted').val(data.result);
                     } else {
-                        alert('Empty or Malformed content!');
-                        $('#output').val('');
+                        alert('Malformed encrypted text!');
                     };
                     $('.btn').attr('disabled', false);
+                    $('body').removeClass('wait');
                 }, 'json');
+            });
+            $('#auto').change(function() {
+                $('#level').attr('disabled', this.checked);
+            });
+            $('#show').change(function() {
+                if ($('#key').attr('type') == 'password') {
+                    $('#key').attr('type', 'text');
+                } else {
+                    $('#key').attr('type', 'password');
+                };
             });
         });
     </script>
@@ -55,30 +97,53 @@
 
 <body>
     <header class='navbar navbar-expand navbar-light flex-column flex-md-row'>
-        <a class='navbar-brand text-primary m-0 mr-md-3' href='' style='font-size:24px;'>Encryption</a>
+        <a class='navbar-brand text-primary m-0 mr-md-3' href='/' style='font-size:24px;'>Text Encryption</a>
     </header>
     <div class='container-fluid'>
         <div class='row'>
-            <div class='content'>
-                <textarea class='form-control' id='content' placeholder='Type (or paste) here...'></textarea>
+            <div class='unencrypted'>
+                <textarea class='form-control' id='unencrypted' placeholder='Type (or paste) unencrypted text here...'></textarea>
             </div>
             <div class='btnbar p-0 pt-5'>
-                <div class='input-group mb-3'>
+                <div class='input-group'>
                     <div class='input-group-prepend'>
                         <span class='input-group-text'>Key</span>
                     </div>
-                    <input type='password' class='form-control' id='key'>
+                    <input type='password' class='form-control' maxlength=1000 id='key'>
                 </div>
-                <button class='btn btn-primary btn-block' type='button' id='encrypt'>Encrypt</button>
-				<button class='btn btn-primary btn-block' type='button' id='decrypt'>Decrypt</button>
+                <div class='custom-control custom-checkbox mb-3'>
+                    <input type='checkbox' class='custom-control-input' id='show'>
+                    <label class='custom-control-label' for='show'>Show/Hide Key</label>
+                </div>
+                <div class='input-group align-items-center mb-3'>
+                    <div class='input-group-prepend'>
+                        <span class='input-group-text'>Level</span>
+                    </div>
+                    <input class='form-control' type='number' min=1 max=99999 value=5 id='level' disabled>
+                    <div class='custom-control custom-checkbox ml-2'>
+                        <input type='checkbox' class='custom-control-input' id='auto' checked>
+                        <label class='custom-control-label' for='auto'>Auto</label>
+                    </div>
+                </div>
+                <button class='btn btn-danger btn-block' type='button' id='encrypt'>&gt;== Encrypt ==&gt;</button>
+				<button class='btn btn-success btn-block' type='button' id='decrypt'>&lt;== Decrypt ==&lt;</button>
                 <br>
                 <button onclick='Copy()' type='button' class='btn btn-primary btn-block'>Copy to clipboard</button>
-                <br>
+                <div class='d-flex justify-content-around'>
+                    <div class='custom-control custom-radio custom-control-inline'>
+                        <input class='custom-control-input' type='radio' id='text1' name='text' value='unencrypted'>
+                        <label class='custom-control-label' for='text1'>Unencrypted</label>
+                    </div>
+                    <div class='custom-control custom-radio custom-control-inline'>
+                        <input class='custom-control-input' type='radio' id='text2' name='text' value='encrypted' checked>
+                        <label class='custom-control-label' for='text2'>Encrypted</label>
+                    </div>
+                </div>
                 <br>
                 <button onclick='Clear()' type='button' class='btn btn-primary btn-block'>Clear</button>
             </div>
-            <div class='output'>
-                <textarea class='form-control' id='output' readonly></textarea>
+            <div class='encrypted'>
+                <textarea class='form-control' id='encrypted' placeholder='Paste encrypted text here...'></textarea>
             </div>
         </div>
     </div>
