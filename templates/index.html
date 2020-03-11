@@ -104,43 +104,59 @@
             <div class='unencrypted'>
                 <textarea class='form-control' id='unencrypted' placeholder='Type (or paste) unencrypted text here...'></textarea>
             </div>
-            <div class='btnbar p-0 pt-5'>
-                <div class='input-group'>
-                    <div class='input-group-prepend'>
-                        <span class='input-group-text'>Key</span>
+            <div class='btnbar'>
+                <div class='button-group'>
+                    <div class='input-group'>
+                        <div class='input-group-prepend'>
+                            <span class='input-group-text'>Key</span>
+                        </div>
+                        <input type='password' class='form-control' maxlength=1000 id='key'>
                     </div>
-                    <input type='password' class='form-control' maxlength=1000 id='key'>
-                </div>
-                <div class='custom-control custom-checkbox mb-3'>
-                    <input type='checkbox' class='custom-control-input' id='show'>
-                    <label class='custom-control-label' for='show'>Show/Hide Key</label>
-                </div>
-                <div class='input-group align-items-center mb-3'>
-                    <div class='input-group-prepend'>
-                        <span class='input-group-text'>Level</span>
-                    </div>
-                    <input class='form-control' type='number' min=1 max=99999 value=5 id='level' disabled>
-                    <div class='custom-control custom-checkbox ml-2'>
-                        <input type='checkbox' class='custom-control-input' id='auto' checked>
-                        <label class='custom-control-label' for='auto'>Auto</label>
+                    <div class='custom-control custom-checkbox mb-3'>
+                        <input type='checkbox' class='custom-control-input' id='show'>
+                        <label class='custom-control-label' for='show'>Show/Hide Key</label>
                     </div>
                 </div>
-                <button class='btn btn-danger btn-block' type='button' id='encrypt'>&gt;== Encrypt ==&gt;</button>
-				<button class='btn btn-success btn-block' type='button' id='decrypt'>&lt;== Decrypt ==&lt;</button>
-                <br>
-                <button onclick='Copy()' type='button' class='btn btn-primary btn-block'>Copy to clipboard</button>
-                <div class='d-flex justify-content-around'>
-                    <div class='custom-control custom-radio custom-control-inline'>
-                        <input class='custom-control-input' type='radio' id='text1' name='text' value='unencrypted'>
-                        <label class='custom-control-label' for='text1'>Unencrypted</label>
-                    </div>
-                    <div class='custom-control custom-radio custom-control-inline'>
-                        <input class='custom-control-input' type='radio' id='text2' name='text' value='encrypted' checked>
-                        <label class='custom-control-label' for='text2'>Encrypted</label>
+                <div class='button-group'>
+                    <div class='input-group align-items-center mb-3'>
+                        <div class='input-group-prepend'>
+                            <span class='input-group-text'>Level</span>
+                        </div>
+                        <input class='form-control' type='number' min=1 max=99999 value=5 id='level' disabled>
+                        <div class='custom-control custom-checkbox ml-2'>
+                            <input type='checkbox' class='custom-control-input' id='auto' checked>
+                            <label class='custom-control-label' for='auto'>Auto</label>
+                        </div>
                     </div>
                 </div>
-                <br>
-                <button onclick='Clear()' type='button' class='btn btn-primary btn-block'>Clear</button>
+                <div class='button-group main'>
+                    <button class='btn btn-danger btn-block' type='button' id='encrypt'>
+                        <span class='horizontal'>🡢 Encrypt 🡢</span>
+                        <span class='vertical'>🡣 Encrypt 🡣</span>
+                    </button>
+                    <button class='btn btn-success btn-block' type='button' id='decrypt'>
+                        <span class='horizontal'>🡠 Decrypt 🡠</span>
+                        <span class='vertical'>🡡 Decrypt 🡡</span>
+                    </button>
+                </div>
+                <div class='button-group copy'>
+                    <br>
+                    <button onclick='Copy()' type='button' class='btn btn-primary btn-block'>Copy to clipboard</button>
+                    <div class='d-flex justify-content-around'>
+                        <div class='custom-control custom-radio custom-control-inline'>
+                            <input class='custom-control-input' type='radio' id='text1' name='text' value='unencrypted'>
+                            <label class='custom-control-label' for='text1'>Unencrypted</label>
+                        </div>
+                        <div class='custom-control custom-radio custom-control-inline'>
+                            <input class='custom-control-input' type='radio' id='text2' name='text' value='encrypted' checked>
+                            <label class='custom-control-label' for='text2'>Encrypted</label>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <div class='button-group'>
+                    <button onclick='Clear()' type='button' class='btn btn-primary btn-block'>Clear</button>
+                </div>
             </div>
             <div class='encrypted'>
                 <textarea class='form-control' id='encrypted' placeholder='Paste encrypted text here...'></textarea>
