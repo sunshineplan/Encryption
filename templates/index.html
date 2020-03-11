@@ -30,9 +30,7 @@
                         return false;
                     };
                 };
-                $('.btn').attr('disabled', true);
-                $('body').addClass('wait');
-                $('#encrypted').val('');
+                waiting();
                 $.post('do', {
                     mode: 'encrypt',
                     key: $('#key').val(),
@@ -44,9 +42,11 @@
                     } else {
                         alert('Unknow error!');
                     };
-                    $('.btn').attr('disabled', false);
-                    $('body').removeClass('wait');
-                }, 'json');
+                }, 'json').fail(function (){
+                    alert('Network error!');
+                }).always(function() {
+                    waiting(false);
+                });
             });
             $('#decrypt').click(function() {
                 if ($('#encrypted').val() == '') {
@@ -63,9 +63,7 @@
                         return false;
                     };
                 };
-                $('.btn').attr('disabled', true);
-                $('body').addClass('wait');
-                $('#unencrypted').val('');
+                waiting();
                 $.post('do', {
                     mode: 'decrypt',
                     key: $('#key').val(),
@@ -77,9 +75,11 @@
                     } else {
                         alert('Malformed encrypted text!');
                     };
-                    $('.btn').attr('disabled', false);
-                    $('body').removeClass('wait');
-                }, 'json');
+                }, 'json').fail(function (){
+                    alert('Network error!');
+                }).always(function() {
+                    waiting(false);
+                });
             });
             $('#auto').change(function() {
                 $('#level').attr('disabled', this.checked);

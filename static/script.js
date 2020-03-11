@@ -20,3 +20,17 @@ function getLevel() {
         return false;
     };
 };
+
+function waiting(on=true) {
+    if (on == true) {
+        $('.btn').attr('disabled', true);
+        $('body').addClass('wait');
+        $('.navbar').css('pointer-events', 'none');
+        $('.row').css('pointer-events', 'none');
+    } else {
+        $('.btn').attr('disabled', false);
+        $('body').removeClass('wait');
+        $('.navbar').css('pointer-events', 'auto');
+        $('.row').css('pointer-events', 'auto');
+    };
+};
