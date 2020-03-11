@@ -14,7 +14,7 @@ function Clear() {
 };
 
 function getLevel() {
-    if (0 < $('#level').val().length && $('#level').val().length < 6) {
+    if (0 < $('#level').val() && $('#level').val() < 101) {
         return $('#level').val();
     } else {
         return false;

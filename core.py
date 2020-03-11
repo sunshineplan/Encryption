@@ -9,7 +9,7 @@ def preprocess(key, content, loop):
         content = content.encode()
     try:
         loop = int(loop)
-        if loop < 0 or loop > 99999:
+        if loop < 0 or loop > 100:
             raise ValueError
     except ValueError:
         loop = int(str(len(content)/len(key))[-1])
