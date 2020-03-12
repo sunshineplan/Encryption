@@ -30,16 +30,16 @@ def preprocess(key, content, loop):
 
 def decrypt(key, content, loop='auto'):
     try:
-        content = b64converter(content)
+        content = b64converter(content).decode()
     except:
         return None
     if content == '':
         return None
     elif key == '':
-        return content.decode()
+        return content
     else:
         key = key[:1000]
-        key, content, loop = preprocess(key, content, loop)
+        key, content, loop = preprocess(key, content.encode(), loop)
         for _ in range(loop):
             dc = b''
             for i in range(len(content)):
