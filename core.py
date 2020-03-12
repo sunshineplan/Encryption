@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from base64 import b64decode, b64encode
+from zlib import compress, decompress
 
 
 def preprocess(key, content, loop):
     if isinstance(content, str):
-        content = content.encode()
+        content = compress(content.encode())
     try:
         loop = int(loop)
         if loop < 0 or loop > 100:
@@ -36,7 +37,7 @@ def decrypt(key, content, loop='auto'):
                 k = key[i % len(key)]
                 dc += bytes([(content[i] - k - int(str(i)[-1]) + 512) % 256])
             content = dc
-        return content.decode()
+        return decompress(content).decode()
 
 
 def encrypt(key, content, loop='auto'):
