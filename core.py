@@ -27,7 +27,7 @@ def decrypt(key, content, loop='auto'):
     if content == '':
         return None
     elif key == '':
-        return content
+        return content.decode()
     else:
         key = key[:1000]
         key, content, loop = preprocess(key, content, loop)
