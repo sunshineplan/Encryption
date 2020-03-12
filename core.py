@@ -19,9 +19,12 @@ def preprocess(key, content, loop):
         if loop < 0 or loop > 100:
             raise ValueError
     except ValueError:
-        loop = int(str(len(content)/len(key))[-1])
-        if not loop:
-            loop = int(str(len(content))[0])
+        loop1 = int(str(len(content)/len(key))[0] + str(len(content)/len(key))[-1])
+        loop2 = int(str(len(content)/len(key))[-1] + str(len(content)/len(key))[0])
+        if loop1 < loop2:
+            loop = loop1 + 100
+        else:
+            loop = loop2 + 100
     return key.encode(), content, loop
 
 
