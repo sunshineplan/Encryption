@@ -5,6 +5,12 @@ from base64 import b64decode, b64encode
 from zlib import compress, decompress
 
 
+def b64converter(content):
+    if isinstance(content, str):
+        return b64decode(content + '=' * (len(content) % 4))
+    return b64encode(content).decode().replace('=', '')
+
+
 def preprocess(key, content, loop):
     if isinstance(content, str):
         content = compress(content.encode())
@@ -21,7 +27,7 @@ def preprocess(key, content, loop):
 
 def decrypt(key, content, loop='auto'):
     try:
-        content = b64decode(content)
+        content = b64converter(content)
     except:
         return None
     if content == '':
@@ -44,7 +50,7 @@ def encrypt(key, content, loop='auto'):
     if content == '':
         return None
     elif key == '':
-        return b64encode(content.encode()).decode()
+        return b64converter(content.encode())
     else:
         key = key[:1000]
         key, content, loop = preprocess(key, content, loop)
@@ -54,4 +60,4 @@ def encrypt(key, content, loop='auto'):
                 k = key[i % len(key)]
                 ec += bytes([(content[i] + k + int(str(i)[-1])) % 256])
             content = ec
-        return b64encode(content).decode()
+        return b64converter(content)
