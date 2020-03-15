@@ -9,6 +9,8 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Simple Text Encryption</title>
     <script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
+    <script src="{{ url_for('static', filename='sjcl.js') }}"></script>
+    <script src="{{ url_for('static', filename='zlib.min.js') }}"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' rel='stylesheet'>
     <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
@@ -20,22 +22,18 @@
                     alert('Empty unencrypted text!');
                     return false;
                 }
-                if ($('#auto').is(':checked')) {
-                    level = 'auto';
-                } else {
-                    level = getLevel();
-                    if (level == false) {
-                        alert('Level must be between 1 and 100');
-                        $('#level').val('5');
-                        return false;
-                    };
-                };
                 waiting();
+                try {
+                    encrypt();
+                } catch (e) {
+                    alert('Error!\n\n' + e.message);
+                };
+                waiting(false);
+                return
                 $.post('do', {
                     mode: 'encrypt',
                     key: $('#key').val(),
                     content: $('#unencrypted').val(),
-                    level: level,
                 }, function(data) {
                     if (data.result != null) {
                         $('#encrypted').val(data.result);
@@ -53,36 +51,29 @@
                     alert('Empty encrypted text!');
                     return false;
                 }
-                if ($('#auto').is(':checked')) {
-                    level = 'auto';
-                } else {
-                    level = getLevel();
-                    if (level == false) {
-                        alert('Level must be between 1 and 100');
-                        $('#level').val('5');
-                        return false;
-                    };
-                };
                 waiting();
+                try {
+                    decrypt();
+                } catch (e) {
+                    alert('Incorrect key or malformed encrypted text!\n\n' + e.message);
+                };                
+                waiting(false);
+                return
                 $.post('do', {
                     mode: 'decrypt',
                     key: $('#key').val(),
                     content: $('#encrypted').val(),
-                    level: level
                 }, function(data) {
                     if (data.result != null) {
                         $('#unencrypted').val(data.result);
                     } else {
-                        alert('Malformed encrypted text!');
+                        alert('Incorrect key or malformed encrypted text!');
                     };
                 }, 'json').fail(function (){
                     alert('Network error!');
                 }).always(function() {
                     waiting(false);
                 });
-            });
-            $('#auto').change(function() {
-                $('#level').attr('disabled', this.checked);
             });
             $('#show').change(function() {
                 if ($('#key').attr('type') == 'password') {
@@ -115,18 +106,6 @@
                     <div class='custom-control custom-checkbox mb-3'>
                         <input type='checkbox' class='custom-control-input' id='show'>
                         <label class='custom-control-label' for='show'>Show/Hide Key</label>
-                    </div>
-                </div>
-                <div class='button-group'>
-                    <div class='input-group align-items-center mb-3'>
-                        <div class='input-group-prepend'>
-                            <span class='input-group-text'>Level</span>
-                        </div>
-                        <input class='form-control' type='number' min=1 max=100 value=5 id='level' disabled>
-                        <div class='custom-control custom-checkbox ml-2'>
-                            <input type='checkbox' class='custom-control-input' id='auto' checked>
-                            <label class='custom-control-label' for='auto'>Auto</label>
-                        </div>
                     </div>
                 </div>
                 <div class='button-group main'>
