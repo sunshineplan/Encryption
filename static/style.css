@@ -1,5 +1,6 @@
 .navbar {
     height: 80px;
+    justify-content: space-between;
 }
 
 .navbar-brand {

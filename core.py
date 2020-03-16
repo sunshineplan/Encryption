@@ -4,63 +4,82 @@
 from base64 import b64decode, b64encode
 from zlib import compress, decompress
 
-
-def b64converter(content):
-    if isinstance(content, str):
-        return b64decode(content + '=' * (len(content) % 4))
-    return b64encode(content).decode().replace('=', '')
-
-
-def preprocess(key, content, loop):
-    if isinstance(content, str):
-        content = compress(content.encode())
-    try:
-        loop = int(loop)
-        if loop < 0 or loop > 100:
-            raise ValueError
-    except ValueError:
-        loop1 = int(str(len(content)/len(key))[0] + str(len(content)/len(key))[-1])
-        loop2 = int(str(len(content)/len(key))[-1] + str(len(content)/len(key))[0])
-        if loop1 < loop2:
-            loop = loop1 + 100
-        else:
-            loop = loop2 + 100
-    return key.encode(), content, loop
+from Crypto.Cipher import AES
+from Crypto.Hash import HMAC, SHA256
+from Crypto.Protocol.KDF import PBKDF2
+from Crypto.Random import get_random_bytes
 
 
-def decrypt(key, content, loop='auto'):
-    try:
-        content = b64converter(content).decode()
-    except:
-        return None
-    if content == '':
+def zlib(data):
+    if isinstance(data, str):
+        compressed = compress(data.encode())
+        if len(compressed) > len(data.encode()):
+            return data.encode(), b'0'
+        return compressed, b'1'
+    return decompress(data)
+
+
+def truncate_iv(iv, ol, tlen):  # ol and tlen in bits
+    ivl = len(iv)  # iv length in bytes
+    ol = (ol - tlen) // 8
+    # "compute the length of the length" (see ccm.js)
+    L = 2
+    while (L < 4) and ((ol >> (8*L))) > 0:
+        L += 1
+    if L < 15 - ivl:
+        L = 15 - ivl
+    return iv[:(15-L)]
+
+
+def prf(key, salt):
+    return HMAC.new(key, salt, SHA256).digest()
+
+
+def decrypt(key, data):
+    data = b64decode(data + '=' * (len(data) % 4))
+    salt = data[:8]
+    iv = data[8:24]
+    key = PBKDF2(key.encode(), salt, count=10000, dkLen=16, prf=prf)
+    ciphertext = data[24:-1]
+    nonce = truncate_iv(iv, len(ciphertext)*8, 64)
+    cipher = AES.new(key, AES.MODE_CCM, nonce=nonce, mac_len=8)
+    if data[-1] == b'0'[0]:
+        return cipher.decrypt_and_verify(ciphertext[:-8], ciphertext[-8:]).decode()
+    return zlib(cipher.decrypt_and_verify(ciphertext[:-8], ciphertext[-8:])).decode()
+
+
+def encrypt(key, plaintext):
+    salt = get_random_bytes(8)
+    iv = get_random_bytes(16)
+    key = PBKDF2(key.encode(), salt, count=10000, dkLen=16, prf=prf)
+    data, compression = zlib(plaintext)
+    nonce = truncate_iv(iv, len(data) * 8, 64)
+    cipher = AES.new(key, AES.MODE_CCM, nonce=nonce, mac_len=8)
+    ciphertext, tag = cipher.encrypt_and_digest(data)
+    return b64encode(salt+iv+ciphertext+tag+compression).decode().replace('=', '')
+    # return {
+    #    'salt': b64encode(salt),
+    #    'iter': 10000,
+    #    'ks': 128,
+    #    'ct': b64encode(ciphertext + tag),
+    #    'iv': b64encode(iv),
+    #    'cipher': 'aes',
+    #    'mode': 'ccm',
+    #    'adata': '',
+    #    'v': 1,
+    #    'ts': 64
+    # }
+
+
+def encrypt_old(key, data):
+    if data == '':
         return None
     elif key == '':
-        return content
+        return b64encode(data.encode()).decode()
     else:
-        key = key[:1000]
-        key, content, loop = preprocess(key, content.encode(), loop)
-        for _ in range(loop):
-            dc = b''
-            for i in range(len(content)):
-                k = key[i % len(key)]
-                dc += bytes([(content[i] - k - int(str(i)[-1]) + 512) % 256])
-            content = dc
-        return decompress(content).decode()
-
-
-def encrypt(key, content, loop='auto'):
-    if content == '':
-        return None
-    elif key == '':
-        return b64converter(content.encode())
-    else:
-        key = key[:1000]
-        key, content, loop = preprocess(key, content, loop)
-        for _ in range(loop):
-            ec = b''
-            for i in range(len(content)):
-                k = key[i % len(key)]
-                ec += bytes([(content[i] + k + int(str(i)[-1])) % 256])
-            content = ec
-        return b64converter(content)
+        data = data.encode()
+        ec = b''
+        for i in range(len(data)):
+            k = key[i % len(key)]
+            ec += bytes([(data[i] + k) % 256])
+        return b64encode(ec).decode()
