@@ -15,6 +15,7 @@
     <!--               https://github.com/imaya/zlib.js               -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
     <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
 
     <script>
@@ -121,12 +122,12 @@
                 </div>
                 <div class='button-group main'>
                     <button class='btn btn-danger btn-block' type='button' id='encrypt'>
-                        <span class='horizontal'>🡢 Encrypt 🡢</span>
-                        <span class='vertical'>🡣 Encrypt 🡣</span>
+                        <span class='horizontal'><i class='icon'>arrow_forward</i> Encrypt <i class='icon'>arrow_forward</i></span>
+                        <span class='vertical'><i class='icon'>arrow_downward</i>Encrypt<i class='icon'>arrow_downward</i></span>
                     </button>
                     <button class='btn btn-success btn-block' type='button' id='decrypt'>
-                        <span class='horizontal'>🡠 Decrypt 🡠</span>
-                        <span class='vertical'>🡡 Decrypt 🡡</span>
+                        <span class='horizontal'><i class='icon'>arrow_back</i> Decrypt <i class='icon'>arrow_back</i></span>
+                        <span class='vertical'><i class='icon'>arrow_upward</i>Decrypt<i class='icon'>arrow_upward</i></span>
                     </button>
                 </div>
                 <div class='button-group copy'>
