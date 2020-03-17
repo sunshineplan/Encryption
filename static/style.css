@@ -65,7 +65,9 @@ body.wait, body.wait * {
     }
 
     .container-fluid {
+        position: relative;
         height: auto;
+        padding-bottom: 15px;
     }
 
     .btnbar {
