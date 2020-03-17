@@ -3,6 +3,7 @@ function Copy() {
     textarea.select();
     document.execCommand('Copy');
     textarea[0].setSelectionRange(textarea.val().length, textarea.val().length);
+    $('#copy').focus();
     if (textarea.val() !== '') {
         alert('Text has been copied to clipboard.');
     };
