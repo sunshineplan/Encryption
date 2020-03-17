@@ -30,7 +30,7 @@ function waiting(on = true) {
 concat = sjcl.bitArray.concat;
 
 function encrypt() {
-    var key = $('#key').val();
+    var key = $('#key').val().trim();
     var plaintext = $('#unencrypted').val();
     if (key == '') {
         if (confirm('Warning!\n\nNo key provided, only encode using base64.\n\nContinue?')) {
@@ -45,7 +45,7 @@ function encrypt() {
 };
 
 function decrypt() {
-    var key = $('#key').val();
+    var key = $('#key').val().trim();
     if (key == '') {
         $('#unencrypted').val(decodeURIComponent(escape(atob($('#encrypted').val()))));
         return;

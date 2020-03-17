@@ -27,7 +27,7 @@
                 if ($('#online').prop('checked')) {
                     $.post('do', {
                         mode: 'encrypt',
-                        key: $('#key').val(),
+                        key: $('#key').val().trim(),
                         content: $('#unencrypted').val(),
                     }, function (data) {
                         if (data.result != null) {
@@ -59,7 +59,7 @@
                 if ($('#online').prop('checked')) {
                     $.post('do', {
                         mode: 'decrypt',
-                        key: $('#key').val(),
+                        key: $('#key').val().trim(),
                         content: $('#encrypted').val(),
                     }, function (data) {
                         if (data.result != null) {
