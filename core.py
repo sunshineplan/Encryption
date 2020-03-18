@@ -43,6 +43,8 @@ def prf(key, salt):
 
 def decrypt(key, data):
     data = b64decode(data + '=' * (len(data) % 4))
+    if key == '':
+        return data.decode()
     salt = data[:8]
     iv = data[8:24]
     key = PBKDF2(key.encode(), salt, count=10000, dkLen=16, prf=prf)
@@ -55,6 +57,8 @@ def decrypt(key, data):
 
 
 def encrypt(key, plaintext):
+    if key == '':
+        return b64encode(plaintext.encode()).decode().replace('=', '')
     salt = get_random_bytes(8)
     iv = get_random_bytes(16)
     key = PBKDF2(key.encode(), salt, count=10000, dkLen=16, prf=prf)
