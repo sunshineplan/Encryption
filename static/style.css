@@ -1,4 +1,6 @@
 .navbar {
+    position: fixed;
+    width: 100%;
     user-select: none;
     height: 80px;
     justify-content: space-between;
@@ -10,6 +12,7 @@
 
 .container-fluid {
     position: fixed;
+    top: 80px;
     height: calc(100% - 80px);
 }
 
@@ -61,11 +64,13 @@ body.wait, body.wait * {
 
 @media (max-width: 900px) {
     .navbar {
+        position: relative;
         height: auto;
     }
 
     .container-fluid {
         position: relative;
+        top: 0;
         height: auto;
         padding-bottom: 15px;
     }
