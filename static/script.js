@@ -1,11 +1,9 @@
 function Copy() {
     var textarea = $('#' + $("input[name='text']:checked").val());
-    textarea.select();
-    document.execCommand('Copy');
-    textarea[0].setSelectionRange(textarea.val().length, textarea.val().length);
-    $('#copy').focus();
-    if (textarea.val() !== '') {
-        alert('Text has been copied to clipboard.');
+    if (textarea.val().trim() !== '') {
+        navigator.clipboard.writeText(textarea.val())
+            .then(() => alert('Text has been copied to clipboard.'))
+            .catch(() => alert('Unable to copy to clipboard.'));
     };
 };
 
