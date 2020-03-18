@@ -26,6 +26,80 @@ function waiting(on = true) {
     };
 };
 
+function doEncrypt() {
+    if ($('#unencrypted').val() == '') {
+        alert('Empty unencrypted text!');
+        return;
+    };
+    var key = $('#key').val().trim();
+    if (key == '') {
+        if (!confirm('Warning!\n\nNo key provided, only encode using base64.\n\nContinue?')) {
+            return;
+        };
+    };
+    if ($('#online').prop('checked')) {
+        waiting();
+        $.post('do', {
+            mode: 'encrypt',
+            key: key,
+            content: $('#unencrypted').val(),
+        }, function (data) {
+            if (data.result != null) {
+                $('#encrypted').val(data.result);
+            } else {
+                alert('Unknow error!');
+            };
+        }, 'json').fail(function () {
+            alert('Network error!');
+        }).always(function () {
+            waiting(false);
+        });
+    } else {
+        try {
+            waiting();
+            encrypt();
+        } catch (e) {
+            alert('Error!\n\n' + e.message);
+        } finally {
+            waiting(false);
+        };
+    };
+};
+
+function doDecrypt() {
+    if ($('#encrypted').val() == '') {
+        alert('Empty encrypted text!');
+        return false;
+    };
+    if ($('#online').prop('checked')) {
+        waiting();
+        $.post('do', {
+            mode: 'decrypt',
+            key: $('#key').val().trim(),
+            content: $('#encrypted').val(),
+        }, function (data) {
+            if (data.result != null) {
+                $('#unencrypted').val(data.result);
+            } else {
+                alert('Incorrect key or malformed encrypted text!');
+            };
+        }, 'json').fail(function () {
+            alert('Network error!');
+        }).always(function () {
+            waiting(false);
+        });
+    } else {
+        try {
+            waiting();
+            decrypt();
+        } catch (e) {
+            alert('Incorrect key or malformed encrypted text!\n\n' + e.message);
+        } finally { 
+            waiting(false);
+        };
+    };
+};
+
 concat = sjcl.bitArray.concat;
 base64 = sjcl.codec.base64
 
@@ -33,9 +107,7 @@ function encrypt() {
     var key = $('#key').val().trim();
     var content = $('#unencrypted').val();
     if (key == '') {
-        if (confirm('Warning!\n\nNo key provided, only encode using base64.\n\nContinue?')) {
-            $('#encrypted').val(btoa(unescape(encodeURIComponent(content))).replace(/=/g, ''));
-        };
+        $('#encrypted').val(btoa(unescape(encodeURIComponent(content))).replace(/=/g, ''));
         return;
     };
     sjcl.misc.pa = {};

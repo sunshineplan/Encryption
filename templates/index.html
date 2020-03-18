@@ -20,69 +20,6 @@
 
     <script>
         $(function () {
-            $('#encrypt').click(function () {
-                if ($('#unencrypted').val() == '') {
-                    alert('Empty unencrypted text!');
-                    return false;
-                };
-                if ($('#online').prop('checked')) {
-                    $.post('do', {
-                        mode: 'encrypt',
-                        key: $('#key').val().trim(),
-                        content: $('#unencrypted').val(),
-                    }, function (data) {
-                        if (data.result != null) {
-                            $('#encrypted').val(data.result);
-                        } else {
-                            alert('Unknow error!');
-                        };
-                    }, 'json').fail(function () {
-                        alert('Network error!');
-                    }).always(function () {
-                        waiting(false);
-                    });
-                } else {
-                    waiting();
-                    try {
-                        encrypt();
-                    } catch (e) {
-                        alert('Error!\n\n' + e.message);
-                    };
-                    waiting(false);
-                };
-
-            });
-            $('#decrypt').click(function () {
-                if ($('#encrypted').val() == '') {
-                    alert('Empty encrypted text!');
-                    return false;
-                };
-                if ($('#online').prop('checked')) {
-                    $.post('do', {
-                        mode: 'decrypt',
-                        key: $('#key').val().trim(),
-                        content: $('#encrypted').val(),
-                    }, function (data) {
-                        if (data.result != null) {
-                            $('#unencrypted').val(data.result);
-                        } else {
-                            alert('Incorrect key or malformed encrypted text!');
-                        };
-                    }, 'json').fail(function () {
-                        alert('Network error!');
-                    }).always(function () {
-                        waiting(false);
-                    });
-                } else {
-                    waiting();
-                    try {
-                        decrypt();
-                    } catch (e) {
-                        alert('Incorrect key or malformed encrypted text!\n\n' + e.message);
-                    };
-                    waiting(false);
-                };
-            });
             $('#show').change(function () {
                 if ($('#key').attr('type') == 'password') {
                     $('#key').attr('type', 'text');
@@ -121,11 +58,11 @@
                     </div>
                 </div>
                 <div class='button-group main'>
-                    <button class='btn btn-danger btn-block' type='button' id='encrypt'>
+                    <button onclick='doEncrypt()' class='btn btn-danger btn-block' type='button' id='encrypt'>
                         <span class='horizontal'><i class='icon'>arrow_forward</i> Encrypt <i class='icon'>arrow_forward</i></span>
                         <span class='vertical'><i class='icon'>arrow_downward</i>Encrypt<i class='icon'>arrow_downward</i></span>
                     </button>
-                    <button class='btn btn-success btn-block' type='button' id='decrypt'>
+                    <button onclick='doDecrypt()' class='btn btn-success btn-block' type='button' id='decrypt'>
                         <span class='horizontal'><i class='icon'>arrow_back</i> Decrypt <i class='icon'>arrow_back</i></span>
                         <span class='vertical'><i class='icon'>arrow_upward</i>Decrypt<i class='icon'>arrow_upward</i></span>
                     </button>
