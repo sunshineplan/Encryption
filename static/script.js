@@ -42,7 +42,7 @@ function doEncrypt() {
         $.post('do', {
             mode: 'encrypt',
             key: key,
-            content: $('#unencrypted').val(),
+            content: $('#unencrypted').val()
         }, function (data) {
             if (data.result != null) {
                 $('#encrypted').val(data.result);
@@ -76,7 +76,7 @@ function doDecrypt() {
         $.post('do', {
             mode: 'decrypt',
             key: $('#key').val().trim(),
-            content: $('#encrypted').val(),
+            content: $('#encrypted').val()
         }, function (data) {
             if (data.result != null) {
                 $('#unencrypted').val(data.result);
