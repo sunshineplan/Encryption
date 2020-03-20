@@ -15,7 +15,6 @@
     <!--               https://github.com/imaya/zlib.js               -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' rel='stylesheet'>
-    <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
     <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
 
     <script>
@@ -66,12 +65,44 @@
                 </div>
                 <div class='button-group main'>
                     <button onclick='doEncrypt()' class='btn btn-danger btn-block' type='button' id='encrypt'>
-                        <span class='horizontal'><i class='icon'>arrow_forward</i> Encrypt <i class='icon'>arrow_forward</i></span>
-                        <span class='vertical'><i class='icon'>arrow_downward</i>Encrypt<i class='icon'>arrow_downward</i></span>
+                        <span class='horizontal'>
+                            <svg width='1em' height='1em' fill='currentColor'>
+                                <path d='M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 011.659-.753l5.48 4.796a1 1 0 010 1.506z'/>
+                            </svg>
+                            Encrypt
+                            <svg width='1em' height='1em' fill='currentColor'>
+                                <path d='M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 011.659-.753l5.48 4.796a1 1 0 010 1.506z'/>
+                            </svg>
+                        </span>
+                        <span class='vertical'>
+                            <svg width='1em' height='1em' fill='currentColor'>
+                                <path d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 01.753 1.659l-4.796 5.48a1 1 0 01-1.506 0z'/>
+                            </svg>
+                            Encrypt
+                            <svg width='1em' height='1em' fill='currentColor'>
+                                <path d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 01.753 1.659l-4.796 5.48a1 1 0 01-1.506 0z'/>
+                            </svg>
+                        </span>
                     </button>
                     <button onclick='doDecrypt()' class='btn btn-success btn-block' type='button' id='decrypt'>
-                        <span class='horizontal'><i class='icon'>arrow_back</i> Decrypt <i class='icon'>arrow_back</i></span>
-                        <span class='vertical'><i class='icon'>arrow_upward</i>Decrypt<i class='icon'>arrow_upward</i></span>
+                        <span class='horizontal'>
+                            <svg width='1em' height='1em' fill='currentColor'>
+                                <path d='M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 00-1.659-.753l-5.48 4.796a1 1 0 000 1.506z'/>
+                            </svg>
+                            Decrypt
+                            <svg width='1em' height='1em' fill='currentColor'>
+                                <path d='M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 00-1.659-.753l-5.48 4.796a1 1 0 000 1.506z'/>
+                            </svg>
+                        </span>
+                        <span class='vertical'>
+                            <svg width='1em' height='1em' fill='currentColor'>
+                                <path d='M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 00.753-1.659l-4.796-5.48a1 1 0 00-1.506 0z'/>
+                            </svg>
+                            Decrypt
+                            <svg width='1em' height='1em' fill='currentColor'>
+                                <path d='M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 00.753-1.659l-4.796-5.48a1 1 0 00-1.506 0z'/>
+                            </svg>
+                        </span>
                     </button>
                 </div>
                 <div class='button-group copy'>
