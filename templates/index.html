@@ -20,6 +20,13 @@
 
     <script>
         $(function () {
+            $('#online').change(function () {
+                if ($('#online').prop('checked')) {
+                    if (!confirm('It is recommended using online version only when offline version is not working.\n\nContinue?')) {
+                        $('#online').prop('checked', false);
+                    };
+                };
+            });
             $('#show').change(function () {
                 if ($('#key').attr('type') == 'password') {
                     $('#key').attr('type', 'text');
