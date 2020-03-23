@@ -94,7 +94,7 @@ function doDecrypt() {
             decrypt();
         } catch (e) {
             alert('Incorrect key or malformed encrypted text!\n\n' + e.message);
-        } finally { 
+        } finally {
             waiting(false);
         };
     };
@@ -144,9 +144,7 @@ function zlib(obj) {
             return { content: Uint8ArrayToBits(uint8array), compression: sjcl.codec.utf8String.toBits(0) };
         };
     } else {
-        var uint8array = BitsToUint8Array(obj);
-        var inflate = pako.inflate(uint8array);
-        return new TextDecoder().decode(inflate);
+        return pako.inflate(BitsToUint8Array(obj), { to: 'string' });
     };
 };
 
