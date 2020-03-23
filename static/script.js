@@ -137,7 +137,7 @@ function decrypt() {
 function zlib(obj) {
     if (typeof obj == 'string') {
         var uint8array = new TextEncoder().encode(obj);
-        var deflate = new Zlib.Deflate(uint8array).compress();
+        var deflate = pako.deflate(uint8array);
         if (uint8array.length > deflate.length) {
             return { content: Uint8ArrayToBits(deflate), compression: sjcl.codec.utf8String.toBits(1) };
         } else {
@@ -145,7 +145,7 @@ function zlib(obj) {
         };
     } else {
         var uint8array = BitsToUint8Array(obj);
-        var inflate = new Zlib.Inflate(uint8array).decompress();
+        var inflate = pako.inflate(uint8array);
         return new TextDecoder().decode(inflate);
     };
 };
