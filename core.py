@@ -4,16 +4,10 @@
 from base64 import b64decode, b64encode
 from zlib import compress, decompress
 
-try:
-    from Crypto.Cipher import AES
-    from Crypto.Hash import HMAC, SHA256
-    from Crypto.Protocol.KDF import PBKDF2
-    from Crypto.Random import get_random_bytes
-except ModuleNotFoundError:
-    from Cryptodome.Cipher import AES
-    from Cryptodome.Hash import HMAC, SHA256
-    from Cryptodome.Protocol.KDF import PBKDF2
-    from Cryptodome.Random import get_random_bytes
+from Cryptodome.Cipher import AES
+from Cryptodome.Hash import HMAC, SHA256
+from Cryptodome.Protocol.KDF import PBKDF2
+from Cryptodome.Random import get_random_bytes
 
 
 def zlib(data):
