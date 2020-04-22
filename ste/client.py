@@ -4,7 +4,7 @@
 from getpass import getpass
 from os import name, system
 
-from core import decrypt, encrypt
+from ste._base import decrypt, encrypt
 
 
 def menu():
@@ -48,39 +48,35 @@ def multiline_input():
     return '\n'.join(buffer)
 
 
-def main():
-    while True:
-        clear()
-        choice = menu()
-        if choice == '1':
-            content = multiline_input()
-            key = getpass('Key:')
-            ec = encrypt(key, content)
-            if ec:
-                print('Encrypted Content:')
-                print(ec)
-            else:
-                print('Empty content!')
-            pause()
-        elif choice == '2':
-            content = input('Content:')
-            key = getpass('Key:')
-            dc = decrypt(key, content)
-            if dc:
-                print('Decrypted Content:')
-                print(dc)
-            else:
-                print('Empty or Malformed content!')
-            pause()
-        elif choice.lower() == 'q':
-            clear()
-            break
-        else:
-            pause(mode='error')
-
-
-if __name__ == '__main__':
+def client():
     try:
-        main()
+        while True:
+            clear()
+            choice = menu()
+            if choice == '1':
+                content = multiline_input()
+                key = getpass('Key:')
+                ec = encrypt(key, content)
+                if ec:
+                    print('Encrypted Content:')
+                    print(ec)
+                else:
+                    print('Empty content!')
+                pause()
+            elif choice == '2':
+                content = input('Content:')
+                key = getpass('Key:')
+                dc = decrypt(key, content)
+                if dc:
+                    print('Decrypted Content:')
+                    print(dc)
+                else:
+                    print('Empty or Malformed content!')
+                pause()
+            elif choice.lower() == 'q':
+                clear()
+                break
+            else:
+                pause(mode='error')
     except KeyboardInterrupt:
         clear()
