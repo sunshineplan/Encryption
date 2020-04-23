@@ -3,7 +3,7 @@ Description=uWSGI instance to serve SimpleTextEncryption
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/uwsgi --ini /var/www/SimpleTextEncryption/SimpleTextEncryption.ini
+ExecStart=/usr/bin/uwsgi --ini /var/www/ste/SimpleTextEncryption.ini
 
 [Install]
 WantedBy=multi-user.target
