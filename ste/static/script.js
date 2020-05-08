@@ -46,6 +46,7 @@ function doEncrypt() {
         }, function (data) {
             if (data.result != null) {
                 $('#encrypted').val(data.result);
+                $('textarea').scrollTop(0);
             } else {
                 alert('Unknow error!');
             };
@@ -58,6 +59,7 @@ function doEncrypt() {
         try {
             waiting();
             encrypt();
+            $('textarea').scrollTop(0);
         } catch (e) {
             alert('Error!\n\n' + e.message);
         } finally {
@@ -80,6 +82,7 @@ function doDecrypt() {
         }, function (data) {
             if (data.result != null) {
                 $('#unencrypted').val(data.result);
+                $('textarea').scrollTop(0);
             } else {
                 alert('Incorrect key or malformed encrypted text!');
             };
@@ -92,6 +95,7 @@ function doDecrypt() {
         try {
             waiting();
             decrypt();
+            $('textarea').scrollTop(0);
         } catch (e) {
             alert('Incorrect key or malformed encrypted text!\n\n' + e.message);
         } finally {
