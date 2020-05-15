@@ -2,8 +2,8 @@
 
 import click
 
-from ste._base import decrypt as _decrypt
-from ste._base import encrypt as _encrypt
+from ste import decrypt as _decrypt
+from ste import encrypt as _encrypt
 from ste.client import client as _client
 from ste.server import app
 

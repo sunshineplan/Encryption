@@ -3,7 +3,7 @@
 
 from flask import Flask, jsonify, render_template, request
 
-from ste._base import decrypt, encrypt
+from ste import decrypt, encrypt
 
 app = Flask(__name__)
 

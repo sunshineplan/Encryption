@@ -4,7 +4,7 @@
 from getpass import getpass
 from os import name, system
 
-from ste._base import decrypt, encrypt
+from ste import decrypt, encrypt
 
 
 def menu():
