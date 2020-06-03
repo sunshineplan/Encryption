@@ -1,9 +1,16 @@
+const BootstrapButtons = Swal.mixin({
+    customClass: {
+        confirmButton: 'swal btn btn-primary'
+    },
+    buttonsStyling: false
+});
+
 function Copy() {
     var textarea = $('#' + $("input[name='text']:checked").val());
     if (textarea.val().trim() !== '') {
         navigator.clipboard.writeText(textarea.val())
-            .then(() => alert('Text has been copied to clipboard.'))
-            .catch(() => alert('Unable to copy to clipboard.'));
+            .then(() => BootstrapButtons.fire('Success', 'Text has been copied to clipboard.', 'success'))
+            .catch(() => BootstrapButtons.fire('Error', 'Unable to copy to clipboard.', 'error'));
     };
 };
 
@@ -28,14 +35,26 @@ function waiting(on = true) {
 
 function doEncrypt() {
     if ($('#unencrypted').val() == '') {
-        alert('Empty unencrypted text!');
+        BootstrapButtons.fire('Error', 'Empty unencrypted text!', 'error');
         return;
     };
     var key = $('#key').val().trim();
     if (key == '') {
-        if (!confirm('Warning!\n\nNo key provided, only encode using base64.\n\nContinue?')) {
-            return;
-        };
+        Swal.fire({
+            title: 'Warning!',
+            html: 'No key provided, only encode using base64.<br><br>Continue?',
+            icon: 'warning',
+            showCancelButton: true,
+            customClass: {
+                confirmButton: 'swal btn btn-primary',
+                cancelButton: 'swal btn btn-danger'
+            },
+            buttonsStyling: false
+        }).then(confirm => {
+            if (confirm.value) {
+                return;
+            };
+        });
     };
     if ($('#online').prop('checked')) {
         waiting();
@@ -43,25 +62,23 @@ function doEncrypt() {
             mode: 'encrypt',
             key: key,
             content: $('#unencrypted').val()
-        }, function (data) {
+        }, data => {
             if (data.result != null) {
                 $('#encrypted').val(data.result);
                 $('textarea').scrollTop(0);
             } else {
-                alert('Unknow error!');
+                BootstrapButtons.fire('Error', 'Unknow error!', 'error');
             };
-        }, 'json').fail(function () {
-            alert('Network error!');
-        }).always(function () {
-            waiting(false);
-        });
+        }, 'json')
+            .fail(() => BootstrapButtons.fire('Error', 'Network error!', 'error'))
+            .always(() => waiting(false));
     } else {
         try {
             waiting();
             encrypt();
             $('textarea').scrollTop(0);
         } catch (e) {
-            alert('Error!\n\n' + e.message);
+            BootstrapButtons.fire('Error', e.message, 'error');
         } finally {
             waiting(false);
         };
@@ -70,7 +87,7 @@ function doEncrypt() {
 
 function doDecrypt() {
     if ($('#encrypted').val() == '') {
-        alert('Empty encrypted text!');
+        BootstrapButtons.fire('Error', 'Empty encrypted text!', 'error');
         return false;
     };
     if ($('#online').prop('checked')) {
@@ -79,25 +96,23 @@ function doDecrypt() {
             mode: 'decrypt',
             key: $('#key').val().trim(),
             content: $('#encrypted').val()
-        }, function (data) {
+        }, data => {
             if (data.result != null) {
                 $('#unencrypted').val(data.result);
                 $('textarea').scrollTop(0);
             } else {
-                alert('Incorrect key or malformed encrypted text!');
+                BootstrapButtons.fire('Error', 'Incorrect key or malformed encrypted text!', 'error');
             };
-        }, 'json').fail(function () {
-            alert('Network error!');
-        }).always(function () {
-            waiting(false);
-        });
+        }, 'json')
+            .fail(() => BootstrapButtons.fire('Error', 'Network error!', 'error'))
+            .always(() => waiting(false));
     } else {
         try {
             waiting();
             decrypt();
             $('textarea').scrollTop(0);
         } catch (e) {
-            alert('Incorrect key or malformed encrypted text!\n\n' + e.message);
+            BootstrapButtons.fire('Error', 'Incorrect key or malformed encrypted text!<br><br>' + e.message, 'error');
         } finally {
             waiting(false);
         };

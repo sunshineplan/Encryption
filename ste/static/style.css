@@ -58,6 +58,10 @@
     vertical-align: middle;
 }
 
+.swal {
+    margin: 8px 6px;
+}
+
 body.wait, body.wait * {
     cursor: wait !important;
 }
