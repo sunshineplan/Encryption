@@ -8,27 +8,41 @@
     <meta name='author' content='Sunshine'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Simple Text Encryption</title>
-    <script src='https://cdn.jsdelivr.net/npm/jquery@3'></script>
-    <script src='https://cdn.jsdelivr.net/npm/sjcl@1'></script>
-    <!--      https://github.com/bitwiseshiftleft/sjcl      -->
+    <script src='https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/sjcl@1/sjcl.min.js'></script>
+    <!--            https://github.com/bitwiseshiftleft/sjcl            -->
     <script src='https://cdn.jsdelivr.net/npm/pako@1/dist/pako.min.js'></script>
     <!--                   https://github.com/nodeca/pako                    -->
-    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@9'></script>
-    <!--        https://github.com/sweetalert2/sweetalert2         -->
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.all.min.js'></script>
+    <!--                      https://github.com/sweetalert2/sweetalert2                       -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <link href='https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css' rel='stylesheet'>
     <link rel='stylesheet' href="{{ url_for('static', filename='style.css') }}">
 
     <script>
         $(function () {
-            $('#online').change(function () {
+            $('#online').change(() => {
                 if ($('#online').prop('checked')) {
-                    if (!confirm('It is recommended using online version only when offline version is not working.\n\nContinue?')) {
-                        $('#online').prop('checked', false);
-                    };
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'It is recommended using online version only when offline version is not working.',
+                        icon: 'warning',
+                        confirmButtonText: 'Continue',
+                        showCancelButton: true,
+                        focusCancel: true,
+                        customClass: {
+                            confirmButton: 'swal btn btn-primary',
+                            cancelButton: 'swal btn btn-danger'
+                        },
+                        buttonsStyling: false
+                    }).then(confirm => {
+                        if (!confirm.value) {
+                            $('#online').prop('checked', false);
+                        };
+                    });
                 };
             });
-            $('#show').change(function () {
+            $('#show').change(() => {
                 if ($('#key').attr('type') == 'password') {
                     $('#key').attr('type', 'text');
                 } else {

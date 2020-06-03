@@ -7,11 +7,10 @@ const BootstrapButtons = Swal.mixin({
 
 function Copy() {
     var textarea = $('#' + $("input[name='text']:checked").val());
-    if (textarea.val().trim() !== '') {
+    if (textarea.val().trim() !== '')
         navigator.clipboard.writeText(textarea.val())
             .then(() => BootstrapButtons.fire('Success', 'Text has been copied to clipboard.', 'success'))
             .catch(() => BootstrapButtons.fire('Error', 'Unable to copy to clipboard.', 'error'));
-    };
 };
 
 function Clear() {
@@ -39,50 +38,51 @@ function doEncrypt() {
         return;
     };
     var key = $('#key').val().trim();
-    if (key == '') {
-        Swal.fire({
-            title: 'Warning!',
-            html: 'No key provided, only encode using base64.<br><br>Continue?',
-            icon: 'warning',
-            showCancelButton: true,
-            customClass: {
-                confirmButton: 'swal btn btn-primary',
-                cancelButton: 'swal btn btn-danger'
-            },
-            buttonsStyling: false
-        }).then(confirm => {
-            if (confirm.value) {
-                return;
-            };
-        });
-    };
-    if ($('#online').prop('checked')) {
-        waiting();
-        $.post('do', {
-            mode: 'encrypt',
-            key: key,
-            content: $('#unencrypted').val()
-        }, data => {
-            if (data.result != null) {
-                $('#encrypted').val(data.result);
-                $('textarea').scrollTop(0);
-            } else {
-                BootstrapButtons.fire('Error', 'Unknow error!', 'error');
-            };
-        }, 'json')
-            .fail(() => BootstrapButtons.fire('Error', 'Network error!', 'error'))
-            .always(() => waiting(false));
-    } else {
-        try {
-            waiting();
-            encrypt();
-            $('textarea').scrollTop(0);
-        } catch (e) {
-            BootstrapButtons.fire('Error', e.message, 'error');
-        } finally {
-            waiting(false);
-        };
-    };
+    var promise = new Promise(function (resolve) { if (key == '') resolve(false); else resolve(true) });
+    promise.then(haskey => {
+        if (!haskey)
+            return Swal.fire({
+                title: 'Warning!',
+                text: 'No key provided, only encode using base64.',
+                icon: 'warning',
+                confirmButtonText: 'Continue',
+                showCancelButton: true,
+                customClass: {
+                    confirmButton: 'swal btn btn-primary',
+                    cancelButton: 'swal btn btn-danger'
+                },
+                buttonsStyling: false
+            });
+        else return { value: true }
+    }).then(confirm => {
+        if (confirm.value)
+            if ($('#online').prop('checked')) {
+                waiting();
+                $.post('do', {
+                    mode: 'encrypt',
+                    key: key,
+                    content: $('#unencrypted').val()
+                }, data => {
+                    if (data.result != null) {
+                        $('#encrypted').val(data.result);
+                        $('textarea').scrollTop(0);
+                    } else {
+                        BootstrapButtons.fire('Error', 'Unknow error!', 'error');
+                    };
+                }, 'json')
+                    .fail(() => BootstrapButtons.fire('Error', 'Network error!', 'error'))
+                    .always(() => waiting(false));
+            } else
+                try {
+                    waiting();
+                    encrypt();
+                    $('textarea').scrollTop(0);
+                } catch (e) {
+                    BootstrapButtons.fire('Error', e.message, 'error');
+                } finally {
+                    waiting(false);
+                };
+    });
 };
 
 function doDecrypt() {
@@ -100,9 +100,7 @@ function doDecrypt() {
             if (data.result != null) {
                 $('#unencrypted').val(data.result);
                 $('textarea').scrollTop(0);
-            } else {
-                BootstrapButtons.fire('Error', 'Incorrect key or malformed encrypted text!', 'error');
-            };
+            } else BootstrapButtons.fire('Error', 'Incorrect key or malformed encrypted text!', 'error');
         }, 'json')
             .fail(() => BootstrapButtons.fire('Error', 'Network error!', 'error'))
             .always(() => waiting(false));
@@ -146,39 +144,31 @@ function decrypt() {
     data.salt = Uint8ArrayToBits(cipher.slice(0, 8));
     data.iv = Uint8ArrayToBits(cipher.slice(8, 24));
     data.ct = Uint8ArrayToBits(cipher.slice(24, cipher.length - 1));
-    if (new TextDecoder().decode(cipher.slice(cipher.length - 1, cipher.length)) == 1) {
+    if (new TextDecoder().decode(cipher.slice(cipher.length - 1, cipher.length)) == 1)
         $('#unencrypted').val(zlib(sjcl.json.ia(key, data, { raw: 1 })));
-    } else {
-        $('#unencrypted').val(sjcl.json.ia(key, data));
-    }
+    else $('#unencrypted').val(sjcl.json.ia(key, data));
 };
 
 function zlib(obj) {
     if (typeof obj == 'string') {
         var uint8array = new TextEncoder().encode(obj);
         var deflate = pako.deflate(uint8array);
-        if (uint8array.length > deflate.length) {
+        if (uint8array.length > deflate.length)
             return { content: Uint8ArrayToBits(deflate), compression: sjcl.codec.utf8String.toBits(1) };
-        } else {
-            return { content: Uint8ArrayToBits(uint8array), compression: sjcl.codec.utf8String.toBits(0) };
-        };
-    } else {
-        return pako.inflate(BitsToUint8Array(obj), { to: 'string' });
-    };
+        else return { content: Uint8ArrayToBits(uint8array), compression: sjcl.codec.utf8String.toBits(0) };
+    } else return pako.inflate(BitsToUint8Array(obj), { to: 'string' })
 };
 
 function Uint8ArrayToBits(uint8array) {
     var hex = '';
-    for (var i = 0; i < uint8array.length; i++) {
+    for (var i = 0; i < uint8array.length; i++)
         hex += (uint8array[i] + 0xF00).toString(16).substr(1);
-    };
     return sjcl.codec.hex.toBits(hex);
 };
 
 function BitsToUint8Array(bits) {
     var array = [], hex = sjcl.codec.hex.fromBits(bits);
-    for (var i = 0; i < hex.length; i += 2) {
+    for (var i = 0; i < hex.length; i += 2)
         array.push(parseInt(hex.substr(i, 2), 16));
-    };
     return new Uint8Array(array);
 };
